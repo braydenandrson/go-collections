@@ -31,14 +31,34 @@ func NewCounter[T comparable](input ...any) *Counter[T] {
 	return c
 }
 
-// Basic Methods
-func (c *Counter[T]) Add(item T)               { c.data[item]++ }
-func (c *Counter[T]) AddN(item T, n int)       { c.data[item] += n }
-func (c *Counter[T]) Get(item T) int           { return c.data[item] }
-func (c *Counter[T]) Set(item T, n int)        { c.data[item] = n }
-func (c *Counter[T]) Delete(item T)            { delete(c.data, item) }
-func (c *Counter[T]) Clear()                   { c.data = make(map[T]int) }
-func (c *Counter[T]) Items() map[T]int         { return c.data }
+func (c *Counter[T]) Add(item T) {
+	c.data[item]++
+}
+
+func (c *Counter[T]) AddN(item T, n int) {
+	c.data[item] += n
+}
+
+func (c *Counter[T]) Get(item T) int {
+	return c.data[item]
+}
+
+func (c *Counter[T]) Set(item T, n int) {
+	c.data[item] = n
+}
+
+func (c *Counter[T]) Delete(item T) {
+	delete(c.data, item)
+}
+
+func (c *Counter[T]) Clear() {
+	c.data = make(map[T]int)
+}
+
+func (c *Counter[T]) Items() map[T]int {
+	return c.data
+}
+
 func (c *Counter[T]) Total() int {
 	sum := 0
 	for _, count := range c.data {
@@ -46,6 +66,7 @@ func (c *Counter[T]) Total() int {
 	}
 	return sum
 }
+
 func (c *Counter[T]) Elements() []T {
 	var elems []T
 	for item, count := range c.data {
@@ -57,6 +78,7 @@ func (c *Counter[T]) Elements() []T {
 	}
 	return elems
 }
+
 func (c *Counter[T]) MostCommon(n int) []Pair[T] {
 	pairs := make([]Pair[T], 0, len(c.data))
 	for item, count := range c.data {
@@ -71,7 +93,6 @@ func (c *Counter[T]) MostCommon(n int) []Pair[T] {
 	return pairs
 }
 
-// Update & Subtract
 func (c *Counter[T]) Update(input any) {
 	switch v := input.(type) {
 	case []T:
@@ -106,7 +127,6 @@ func (c *Counter[T]) Subtract(input any) {
 	}
 }
 
-// Math-like operations
 func (c *Counter[T]) Copy() *Counter[T] {
 	newC := NewCounter[T]()
 	for k, v := range c.data {
@@ -152,11 +172,9 @@ func (c *Counter[T]) AndCounter(other *Counter[T]) *Counter[T] {
 
 func (c *Counter[T]) OrCounter(other *Counter[T]) *Counter[T] {
 	result := NewCounter[T]()
-	// Add all from c
 	for k, v := range c.data {
 		result.data[k] = v
 	}
-	// Take max with other
 	for k, v := range other.data {
 		if cv, ok := result.data[k]; !ok || v > cv {
 			result.data[k] = v
@@ -165,9 +183,7 @@ func (c *Counter[T]) OrCounter(other *Counter[T]) *Counter[T] {
 	return result
 }
 
-// Rich comparisons
 func (c *Counter[T]) Equals(other *Counter[T]) bool {
-	// Treat missing keys as zero
 	allKeys := make(map[T]bool)
 	for k := range c.data {
 		allKeys[k] = true
@@ -196,7 +212,6 @@ func (c *Counter[T]) IsSupersetOf(other *Counter[T]) bool {
 	return other.IsSubsetOf(c)
 }
 
-// Unary operations
 func (c *Counter[T]) Positive() *Counter[T] {
 	result := NewCounter[T]()
 	for k, v := range c.data {

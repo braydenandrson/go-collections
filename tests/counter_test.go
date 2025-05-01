@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewCounterFromSlice(t *testing.T) {
-	c := NewCounter[string]([]string{"a", "b", "a", "c", "b", "a"})
+	c := collections.NewCounter[string]([]string{"a", "b", "a", "c", "b", "a"})
 
 	expected := map[string]int{"a": 3, "b": 2, "c": 1}
 	if !reflect.DeepEqual(c.Items(), expected) {
@@ -18,7 +18,7 @@ func TestNewCounterFromSlice(t *testing.T) {
 }
 
 func TestNewCounterFromMap(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 2, "b": 3})
+	c := collections.NewCounter[string](map[string]int{"a": 2, "b": 3})
 
 	if c.Get("a") != 2 || c.Get("b") != 3 {
 		t.Errorf("Incorrect values for keys a or b")
@@ -29,7 +29,7 @@ func TestNewCounterFromMap(t *testing.T) {
 }
 
 func TestAddAndAddN(t *testing.T) {
-	c := NewCounter[string]()
+	c := collections.NewCounter[string]()
 	c.Add("x")
 	c.AddN("x", 4)
 
@@ -39,7 +39,7 @@ func TestAddAndAddN(t *testing.T) {
 }
 
 func TestMostCommon(t *testing.T) {
-	c := NewCounter[string]([]string{"apple", "banana", "apple", "orange", "banana", "apple"})
+	c := collections.NewCounter[string]([]string{"apple", "banana", "apple", "orange", "banana", "apple"})
 	common := c.MostCommon(2)
 
 	if len(common) != 2 || common[0].Item != "apple" || common[0].Count != 3 {
@@ -48,7 +48,7 @@ func TestMostCommon(t *testing.T) {
 }
 
 func TestElements(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 2, "b": 1, "c": 0, "d": -2})
+	c := collections.NewCounter[string](map[string]int{"a": 2, "b": 1, "c": 0, "d": -2})
 	result := c.Elements()
 	sort.Strings(result)
 
@@ -61,7 +61,7 @@ func TestElements(t *testing.T) {
 }
 
 func TestUpdateAndSubtract(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 3, "b": 2})
+	c := collections.NewCounter[string](map[string]int{"a": 3, "b": 2})
 	c.Update(map[string]int{"a": 2, "c": 4})
 	c.Subtract(map[string]int{"b": 1, "c": 2})
 
@@ -72,8 +72,8 @@ func TestUpdateAndSubtract(t *testing.T) {
 }
 
 func TestMathOperations(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 3, "b": 1})
-	d := NewCounter[string](map[string]int{"a": 1, "b": 2})
+	c := collections.NewCounter[string](map[string]int{"a": 3, "b": 1})
+	d := collections.NewCounter[string](map[string]int{"a": 1, "b": 2})
 
 	sum := c.AddCounter(d)
 	if sum.Get("a") != 4 || sum.Get("b") != 3 {
@@ -97,8 +97,8 @@ func TestMathOperations(t *testing.T) {
 }
 
 func TestComparisons(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 2, "b": 0})
-	d := NewCounter[string](map[string]int{"a": 2})
+	c := collections.NewCounter[string](map[string]int{"a": 2, "b": 0})
+	d := collections.NewCounter[string](map[string]int{"a": 2})
 
 	if !c.Equals(d) {
 		t.Errorf("Counters should be equal (zero-counts ignored)")
@@ -109,7 +109,7 @@ func TestComparisons(t *testing.T) {
 }
 
 func TestUnary(t *testing.T) {
-	c := NewCounter[string](map[string]int{"a": 2, "b": -3, "c": 0})
+	c := collections.NewCounter[string](map[string]int{"a": 2, "b": -3, "c": 0})
 
 	pos := c.Positive()
 	if !reflect.DeepEqual(pos.Items(), map[string]int{"a": 2}) {
